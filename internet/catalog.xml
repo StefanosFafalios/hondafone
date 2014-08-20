@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://localhost:8080/it211030935_DistSys/logreg?wsdl" uri="src/conf/xml-resources/web-service-references/logreg/wsdl/localhost_8080/it211030935_DistSys/logreg.wsdl"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys/logreg?xsd=1" uri="src/conf/xml-resources/web-service-references/logreg/wsdl/localhost_8080/it211030935_DistSys/logreg.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys/HondafoneServices?wsdl" uri="src/conf/xml-resources/web-service-references/HondafoneServices/wsdl/localhost_8080/it211030935_DistSys/HondafoneServices.wsdl"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys/HondafoneServices?xsd=1" uri="src/conf/xml-resources/web-service-references/HondafoneServices/wsdl/localhost_8080/it211030935_DistSys/HondafoneServices.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys/SendMessage?wsdl" uri="src/conf/xml-resources/web-service-references/SendMessage/wsdl/localhost_8080/it211030935_DistSys/SendMessage.wsdl"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys/SendMessage?xsd=1" uri="src/conf/xml-resources/web-service-references/SendMessage/wsdl/localhost_8080/it211030935_DistSys/SendMessage.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys2_Server/logreg?wsdl" uri="src/conf/xml-resources/web-service-references/logreg/wsdl/localhost_8080/it211030935_DistSys2_Server/logreg.wsdl"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys2_Server/logreg?xsd=1" uri="src/conf/xml-resources/web-service-references/logreg/wsdl/localhost_8080/it211030935_DistSys2_Server/logreg.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys2_Server/HondafoneServices?wsdl" uri="src/conf/xml-resources/web-service-references/HondafoneServices/wsdl/localhost_8080/it211030935_DistSys2_Server/HondafoneServices.wsdl"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys2_Server/HondafoneServices?xsd=1" uri="src/conf/xml-resources/web-service-references/HondafoneServices/wsdl/localhost_8080/it211030935_DistSys2_Server/HondafoneServices.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys2_Server/SendMessage?wsdl" uri="src/conf/xml-resources/web-service-references/SendMessage/wsdl/localhost_8080/it211030935_DistSys2_Server/SendMessage.wsdl"/>
+    <system systemId="http://localhost:8080/it211030935_DistSys2_Server/SendMessage?xsd=1" uri="src/conf/xml-resources/web-service-references/SendMessage/wsdl/localhost_8080/it211030935_DistSys2_Server/SendMessage.xsd_1.xsd"/>
+</catalog>

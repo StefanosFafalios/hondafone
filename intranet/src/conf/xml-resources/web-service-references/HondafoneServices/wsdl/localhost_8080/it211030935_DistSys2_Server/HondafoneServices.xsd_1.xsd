@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.2.0-1 (tags/2.2.0u1-7139; 2012-06-02T10:55:19+0000) JAXWS-RI/2.2.6-2 JAXWS/2.2 svn-revision#unknown. --><xs:schema xmlns:tns="http://HS/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://HS/">
+
+<xs:element name="createAccount" type="tns:createAccount"/>
+
+<xs:element name="createAccountResponse" type="tns:createAccountResponse"/>
+
+<xs:element name="updateCreditTime" type="tns:updateCreditTime"/>
+
+<xs:element name="updateCreditTimeResponse" type="tns:updateCreditTimeResponse"/>
+
+<xs:complexType name="updateCreditTime">
+<xs:sequence>
+<xs:element name="creditToAdd" type="xs:string" minOccurs="0"/>
+<xs:element name="timeToAdd" type="xs:string" minOccurs="0"/>
+<xs:element name="number" type="xs:string" minOccurs="0"/>
+<xs:element name="timeInAcc" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="updateCreditTimeResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createAccount">
+<xs:sequence>
+<xs:element name="afm" type="xs:string" minOccurs="0"/>
+<xs:element name="numOfAccs" type="xs:int"/>
+<xs:element name="master" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createAccountResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

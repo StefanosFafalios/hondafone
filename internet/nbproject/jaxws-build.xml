@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+        *** GENERATED FROM jax-ws.xml - DO NOT EDIT !                             ***
+        *** TO MODIFY wsimport options USE Web Service node -> Edit WS Attributes ***
+        *** TO CHANGE TARGETS GENERATED TO jaxws-build.xml COPY THOSE             ***
+        *** TARGETS TO ../build.xml AND MODIFY THAT FILE INSTEAD                  ***
+
+        --><project xmlns:xalan="http://xml.apache.org/xslt" xmlns:webproject2="http://www.netbeans.org/ns/web-project/2" xmlns:jaxws="http://www.netbeans.org/ns/jax-ws/1">
+    <!--
+                ===================
+                JAX-WS WSGEN SECTION
+                ===================
+            -->
+    <!--
+                ===================
+                JAX-WS WSIMPORT SECTION
+                ===================
+            -->
+    <target name="wsimport-init" depends="init">
+        <fail if="${wsimport.bad.version}" message="WsImport ant task defined in the classpath ${j2ee.platform.wsimport.classpath} has a serious bug. See http://wiki.netbeans.org/MetroIssue for details."/>
+        <mkdir dir="${build.generated.sources.dir}/jax-ws"/>
+        <property name="j2ee.platform.wsimport.classpath" value="${libs.jaxws21.classpath}"/>
+        <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+            <classpath path="${java.home}/../lib/tools.jar:${j2ee.platform.wsimport.classpath}:${javac.classpath}"/>
+        </taskdef>
+        <condition property="conf-dir" value="${conf.dir}/" else="">
+            <isset property="conf.dir"/>
+        </condition>
+    </target>
+    <target name="wsimport-client-logreg" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/logreg"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/logreg" destdir="${build.generated.dir}/jax-wsCache/logreg" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/logreg/wsdl/localhost_8080/it211030935_DistSys2_Server/logreg.wsdl" catalog="catalog.xml" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/it211030935_DistSys2_Server/logreg?wsdl" xnocompile="true" xendorsed="true">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/logreg/wsdl/localhost_8080/it211030935_DistSys2_Server/logreg.wsdl"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/logreg"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/logreg">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-logreg" depends="-init-project">
+        <delete dir="${build.generated.sources.dir}/jax-ws/logreg"/>
+        <delete dir="${build.generated.dir}/jax-wsCache/logreg"/>
+    </target>
+    <target name="wsimport-client-HondafoneServices" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/HondafoneServices"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/HondafoneServices" destdir="${build.generated.dir}/jax-wsCache/HondafoneServices" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/HondafoneServices/wsdl/localhost_8080/it211030935_DistSys2_Server/HondafoneServices.wsdl" catalog="catalog.xml" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/it211030935_DistSys2_Server/HondafoneServices?wsdl" xnocompile="true" xendorsed="true">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/HondafoneServices/wsdl/localhost_8080/it211030935_DistSys2_Server/HondafoneServices.wsdl"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/HondafoneServices"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/HondafoneServices">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-HondafoneServices" depends="-init-project">
+        <delete dir="${build.generated.sources.dir}/jax-ws/hs"/>
+        <delete dir="${build.generated.dir}/jax-wsCache/HondafoneServices"/>
+    </target>
+    <target name="wsimport-client-SendMessage" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/SendMessage"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/SendMessage" destdir="${build.generated.dir}/jax-wsCache/SendMessage" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/SendMessage/wsdl/localhost_8080/it211030935_DistSys2_Server/SendMessage.wsdl" catalog="catalog.xml" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/it211030935_DistSys2_Server/SendMessage?wsdl" xnocompile="true" xendorsed="true">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/SendMessage/wsdl/localhost_8080/it211030935_DistSys2_Server/SendMessage.wsdl"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/SendMessage"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/SendMessage">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-SendMessage" depends="-init-project">
+        <delete dir="${build.generated.sources.dir}/jax-ws/sendmessage"/>
+        <delete dir="${build.generated.dir}/jax-wsCache/SendMessage"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-logreg, wsimport-client-HondafoneServices, wsimport-client-SendMessage"/>
+</project>

@@ -1,0 +1,59 @@
+body{
+    background-image: url("main-bg.png");
+    background-size: cover;
+}
+
+#wrapper{
+    margin-left:auto;
+    margin-right:auto;
+    width:1000px;
+}
+
+.details{
+    float:left;
+    width:496px;
+    border:2px solid;
+    border-radius: 15px;
+}
+
+.actions{
+    float:right;
+    width:496px;
+    height: 192px;
+    text-align:center;
+    border:2px solid;
+    border-radius: 15px;
+}
+
+#clientActions{
+    height:351px;
+}
+
+#clientMenu{
+    height:355px;
+}
+
+#accountInfo, #accountActions{
+    height:244px;
+}
+
+li{
+    list-style-image: url(bullet.gif);
+}
+
+.li{
+    position:relative;
+    top:-6px;
+}
+
+a{
+    color: black;
+}
+
+a:visited{
+    color: black;
+}
+
+a:hover{
+    font-weight: bold;
+}

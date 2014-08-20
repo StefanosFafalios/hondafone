@@ -1,0 +1,429 @@
+package database;
+
+
+import account.Account;
+import account.AccountInfo;
+import user.admin.Manager;
+import user.admin.SalesRep;
+import user.client.Client;
+import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.Date;
+
+public class DBconnection {
+    
+    private final String connectionURL = "jdbc:mysql://83.212.105.20:3306/team19?useUnicode=true&characterEncoding=utf-8";
+    private final String username = "dbname";
+    private final String password = "dbpass";
+    private Connection connection = null;
+    private Statement statement = null;
+    private ResultSet rs = null;
+
+    public DBconnection() {
+    }
+    
+    public ResultSet getDBdata(String query) { //gets data from database with SELECT queries
+        try {
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(connectionURL, username, password);
+            statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+            
+            return rs;
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public boolean setDBdata(String query){ //updates/deletes/inserts data
+        try {
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(connectionURL, username, password);
+            statement = connection.createStatement();
+            statement.executeUpdate(query);
+            
+            return true;
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+    
+    public Client createClient(String query) { //creates new Client from data retrieved from database
+        
+        rs = getDBdata(query);
+        Client client = null;
+        
+        try {
+            
+            rs.next();
+            String pass = rs.getString("password");
+            String fname = rs.getString("name");
+            String lname = rs.getString("surname");
+            Date bdate = rs.getDate("birthDate");
+            boolean gender = rs.getBoolean("gender");
+            String homeAddress = rs.getString("homeAddress");
+            String workAddress = rs.getString("workAddress");
+            boolean married = rs.getBoolean("isMarried");
+            String afm = rs.getString("afm");
+            String bacc = rs.getString("bankAccount");
+            
+            client = new Client(workAddress, bacc, getRelations("afm"), fname, 
+                    lname, bdate, gender, homeAddress, pass, married, afm);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return client;
+    }
+    
+    private HashMap<String, String> getRelations(String afm) { //gets client relations
+        
+        HashMap<String, String> relations = new HashMap<String, String>();
+        String query = "SELECT * FROM clientRelationships WHERE afm1 = '"+afm+"' OR afm2 = '"+afm+"'";
+        rs = getDBdata(query);
+        
+        try {
+            while(rs.next()) {
+                String afm1 = rs.getString("afm1");
+                if(afm1.equals(afm)) {
+                    relations.put(rs.getString("afm2"), rs.getString("relationship"));
+                }
+                else {
+                    relations.put(afm1, rs.getString("relationship"));
+                }
+            }
+            
+            return relations;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public ArrayList<Account> getAccounts(String afm) { //gets accounts of a client with the given afm
+        
+        String query = "SELECT * FROM accounts WHERE owner1='"+afm+"' OR owner2='"+afm+"'";
+        rs = getDBdata(query);
+
+        ArrayList<Account> accounts = new ArrayList<Account>();
+
+        try {
+            while(rs.next()) {
+                String number = rs.getString("phoneNumber");
+                int credit = rs.getInt("credit");
+                int time = rs.getInt("time");
+                String owner1 = rs.getString("owner1");
+                String owner2 = rs.getString("owner2");
+                Account acc = new Account(number, owner1, owner2, time);
+                accounts.add(acc);
+            }
+            
+            for(Account acc : accounts) {
+                acc.setInfo(getAccInfo(acc));
+            }
+            
+            return accounts;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    private ArrayList<AccountInfo> getAccInfo(Account acc) { //gets the info of the given account
+        
+        ArrayList<AccountInfo> accInfo = new ArrayList<AccountInfo>();
+        
+        String q = "SELECT * FROM accountInfo WHERE account='"+acc.getNumber()+"'";
+        rs = getDBdata(q);
+        
+        try {
+            while(rs.next()){
+                Date date = rs.getDate("date");
+                int crdt = rs.getInt("credit");
+                accInfo.add(new AccountInfo(date, crdt, acc));
+            }
+            
+            return accInfo;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public String findClientName(String afm) { //returns the name of the client with the given afm
+        
+        String query = "SELECT name, surname FROM users WHERE afm = '" + afm + "'";
+        rs = getDBdata(query);
+        String fullName = null;
+        
+        try {
+            
+            rs.next();
+            fullName = rs.getString("surname");
+            fullName += " " + rs.getString("name");
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return fullName;
+    }
+    
+    public SalesRep createSalesAdmin(String query) { //creates a SalesRep from the data retrieved from database
+        
+        SalesRep sr = null;
+        rs = getDBdata(query);
+        
+        try {
+            
+            rs.next();
+            String pass = rs.getString("password");
+            String fname = rs.getString("name");
+            String lname = rs.getString("surname");
+            Date bdate = rs.getDate("birthDate");
+            boolean gender = rs.getBoolean("gender");
+            String homeAddress = rs.getString("homeAddress");
+            boolean married = rs.getBoolean("isMarried");
+            String afm = rs.getString("afm");
+            String bacc = rs.getString("bankAccount");
+            
+            sr = new SalesRep(fname, lname, bdate, gender, homeAddress, pass, married, afm, bacc);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return sr;
+    }
+    
+    public Manager createManager(String query) { //creates a Manager from the data retrieved from database
+        
+        Manager man = null;
+        rs = getDBdata(query);
+        
+        try {
+            
+            rs.next();
+            String pass = rs.getString("password");
+            String fname = rs.getString("name");
+            String lname = rs.getString("surname");
+            Date bdate = rs.getDate("birthDate");
+            boolean gender = rs.getBoolean("gender");
+            String homeAddress = rs.getString("homeAddress");
+            boolean married = rs.getBoolean("isMarried");
+            String afm = rs.getString("afm");
+            String bacc = rs.getString("bankAccount");
+            
+            man = new Manager(fname, lname, bdate, gender, homeAddress, pass, married, afm, bacc);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return man;
+    }
+    
+    public boolean updateTimeCredit(Account acc, int creditToAdd) { //updates credit and time of the given account in database
+        
+        int update_time = creditToAdd*60 + acc.getTime();
+        int update_credit = acc.getTime()/60 + creditToAdd;
+        String number = acc.getNumber();
+        
+        String updateTime = "UPDATE accounts SET time="+update_time+" WHERE phoneNumber='"+number+"';";
+        if(!setDBdata(updateTime)) return false;
+        
+        String updateCredit = "UPDATE accounts SET credit="+update_credit+" WHERE phoneNumber='"+number+"';";
+        if(!setDBdata(updateCredit)) return false;
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String curr_date = dateFormat.format(date); 
+        
+        String accInfoCredit = "INSERT INTO accountInfo (account, date, credit) VALUES('"+number+"', '"+curr_date+"', "+creditToAdd+");";
+        if(!setDBdata(accInfoCredit)) return false;
+    
+        return true;
+    }
+    
+    public boolean updateTimeCredit(String number, int timeInAcc, int creditToAdd) { //updates credit and time of the given account in database
+        
+        int update_time = creditToAdd*60 + timeInAcc;
+        int update_credit = timeInAcc/60 + creditToAdd;
+        
+        String updateTime = "UPDATE accounts SET time="+update_time+" WHERE phoneNumber='"+number+"';";
+        if(!setDBdata(updateTime)) return false;
+        
+        String updateCredit = "UPDATE accounts SET credit="+update_credit+" WHERE phoneNumber='"+number+"';";
+        if(!setDBdata(updateCredit)) return false;
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String curr_date = dateFormat.format(date); 
+        
+        String accInfoCredit = "INSERT INTO accountInfo (account, date, credit) VALUES('"+number+"', '"+curr_date+"', "+creditToAdd+");";
+        if(!setDBdata(accInfoCredit)) return false;
+    
+        return true;
+    }
+    
+    public boolean deleteClient(Client cl) { //deletes client from database
+        
+        String afm = cl.getAfm();
+        
+        String query = "DELETE FROM clientRelationships WHERE afm1 = '"+afm+"'OR afm2 = '"+afm+"'";
+        if(!setDBdata(query)) return false;
+        
+        
+        query = "UPDATE accounts SET owner2 = null WHERE owner2 = '"+afm+"'";
+        if(!setDBdata(query)) return false;
+        
+        query = "UPDATE accounts SET owner1 = owner2, owner2 = null WHERE owner1 = '"+afm+"' AND owner2 IS NOT NULL";
+        if(!setDBdata(query)) return false;
+        
+        for(Account acc : cl.getAccounts()) {
+            if(acc.getOwners()[1].isEmpty()) {
+                query = "DELETE FROM accountInfo WHERE account = '"+acc.getNumber()+"'";
+                if(!setDBdata(query)) return false;
+            }
+        }
+
+        query = "DELETE FROM accounts WHERE owner1 = '"+afm+"'";
+        if(!setDBdata(query)) return false;
+        
+        
+        query = "DELETE FROM users WHERE password = '"+cl.getPassword()+"'";
+        if(!setDBdata(query)) return false;
+        
+        return true;
+    }
+    
+    public boolean deleteAccount(String number) { //deletes account from database
+        String query = "DELETE FROM accountInfo WHERE account = '"+number+"'";
+        if(!setDBdata(query)) return false;
+        
+        query = "DELETE FROM accounts WHERE phoneNumber = '"+number+"'";
+        if(!setDBdata(query)) return false;
+        
+        return true;
+    }
+    
+    public ArrayList<String> getSubscribers() {
+        
+        String query = "SELECT email FROM subscribers";
+        rs = getDBdata(query);
+
+        ArrayList<String> emails = new ArrayList<String>();
+
+        try {
+            while(rs.next()) {
+                String email = rs.getString("email");
+                emails.add(email);
+            }
+            
+            return emails;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public boolean requestsExist() {
+        
+        String query = "SELECT * FROM requests";
+        rs = getDBdata(query);
+        
+        try {
+            if(rs.next()) {
+                return true;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+        return false;
+    }
+    
+    public ArrayList<String[]> getRequests() {
+        
+        String query = "SELECT * FROM requests";
+        rs = getDBdata(query);
+
+        ArrayList<String[]> requests = new ArrayList<String[]>();
+
+        try {
+            while(rs.next()) {
+                String[] newReq = new String[5];
+                newReq[0] = rs.getString("Fname");
+                newReq[1] = rs.getString("Lname");
+                newReq[2] = rs.getString("Account");
+                newReq[3] = rs.getString("afm");
+                newReq[4] = rs.getString("id");
+                requests.add(newReq);
+            }
+            
+            return requests;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public String getEmail(String afm) {
+        
+        String query = "SELECT email FROM users WHERE afm = '"+afm+"'";
+        rs = getDBdata(query);
+        try {
+            if(rs.next()) {
+                return rs.getString("email");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBconnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public boolean deleteRequest(String id) {
+        
+        String query = "DELETE FROM requests WHERE id = '"+id+"'";
+        if(!setDBdata(query)) return false;
+        
+        return true;
+    }
+    
+    public boolean sendRequest(String fname, String lname, String afm, String account) {
+        
+        String query = "INSERT INTO requests (Fname, Lname, Account, afm) VALUES ('"+fname+"', '"+lname+"', '"+(account == null ? "0000000000" : account)+"', '"+afm+"')";
+        if(!setDBdata(query)) return false;
+        
+        return true;
+    }
+}
